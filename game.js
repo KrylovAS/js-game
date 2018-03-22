@@ -9,7 +9,7 @@ class Vector {
         if(vector instanceof Vector ) {
             return  new Vector(this.x + vector.x , this.y + vector.y )
         }else {            
-            throw new Error('Передан другой класс');
+            throw new Error('Передан не класс Vector');
         };
     }
     times(n) {
