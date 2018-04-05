@@ -5,12 +5,12 @@ class Vector {
         this.x = x;
         this.y = y;
     }
-    plus(vector) {
-        if(vector instanceof Vector ) {
-            return  new Vector(this.x + vector.x , this.y + vector.y )
+    plus(typeVector) {
+        if(typeVector instanceof Vector ) {
+            return  new Vector(this.x + typeVector.x , this.y + typeVector.y);
         }else {            
           throw new Error('Можно прибавлять к вектору только вектор типа Vector');
-        };
+        }
     }
     times(n) {        
         return new Vector(this.x * n, this.y * n);
@@ -18,44 +18,46 @@ class Vector {
 }
 
 class Actor {
-    constructor(pos = new Vector(0,0), size = new Vector(1, 1), speed = new Vector(0, 0)) {
+    constructor(pos = new Vector(0, 0), size = new Vector(1, 1), speed = new Vector(0, 0)) {
         if(!(pos instanceof Vector ) || !(size instanceof Vector) || !(speed instanceof Vector)) {
-            throw new Error()        
+            throw new Error('Ожидается обьект типа Vector');
         }
         this.pos = pos;
         this.size = size;
-        this.speed = speed;
-    
-        Object.defineProperties(this, {
-            'left': {
-                value: this.pos.x
-            },
-            'top': {
-                value: this.pos.y
-            },
-            'right': {
-                value: this.pos.x + this.size.x
-            },
-            'bottom': {
-                value: this.pos.y + this.size.x
-            },
-            'type': {
-                value: 'actor'
-            }
-        })
+        this.speed = speed;        
+        
     }
+    get left() {
+        return this.pos.x;
+      }
     
-    act() {
+    get top() {
+        return this.pos.y;
+      }
     
-    }
-    isIntersect(Actor) {
-        if(!(actor instanceof Actor)){
-          throw new Error()  
-        }
-
-
-    }
-
+    get right() {
+        return this.pos.x + this.size.x;
+      }
+    
+    get bottom() {
+        return this.pos.y + this.size.y;
+      }
+    
+    get type() {
+        return 'actor';
+      }
+    
+    act() {}
+    
+    isIntersect(actor) {
+        if(!(actor instanceof Actor || actor === undefined)){
+          throw new Error('Ожидается обьект типа Actor') ;
+        }else if(actor === this) {
+            return false;
+        }else if(actor.left >= this.right || actor.right <= this.left || actor.top >= this.bottom || actor.bottom <= this.top) {                  
+            return false;
+        } 
+        return true;
+    }    
 }
-console.log('gggg')
 
