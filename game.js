@@ -24,7 +24,7 @@ class Actor {
         }
         this.pos = pos;
         this.size = size;
-        this.speed = speed;        
+        this.speed = speed;
         
     }
     get left() {
@@ -48,7 +48,7 @@ class Actor {
       }
     
     act() {}
-    
+
     isIntersect(actor) {
         if(!(actor instanceof Actor || actor === undefined)){
           throw new Error('Ожидается обьект типа Actor') ;
@@ -60,4 +60,60 @@ class Actor {
         return true;
     }    
 }
+
+class Level {
+    constructor(grid = [], actors = []) {
+        this.grid = grid;
+        this.actors = actors;
+        this.height = grid.length;
+        this.player = actors.find(element => element.type === 'player')
+        this.width = grid.reduce((y, x) => {
+            if(x.length > y){
+            return x.length;
+            } return y;
+        }, 0);
+        this.status = null;
+        this.finishDelay = 1;
+        
+    }
+}
+
+
+
+const grid = [
+    [undefined, undefined],
+    ['wall', 'wall']
+  ];
+  
+  function MyCoin(title) {
+    this.type = 'coin';
+    this.title = title;
+  }
+  MyCoin.prototype = Object.create(Actor);
+  MyCoin.constructor = MyCoin;
+  
+  const goldCoin = new MyCoin('Золото');
+  const bronzeCoin = new MyCoin('Бронза');
+  const player = new Actor();
+  const fireball = new Actor();
+  
+  const level = new Level(grid, [ goldCoin, bronzeCoin, player, fireball ]);
+  
+  level.playerTouched('coin', goldCoin);
+  level.playerTouched('coin', bronzeCoin);
+  
+  if (level.noMoreActors('coin')) {
+    console.log('Все монеты собраны');
+    console.log(`Статус игры: ${level.status}`);
+  }
+  
+  const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
+  if (obstacle) {
+    console.log(`На пути препятствие: ${obstacle}`);
+  }
+  
+  const otherActor = level.actorAt(player);
+  if (otherActor === fireball) {
+    console.log('Пользователь столкнулся с шаровой молнией');
+  }
 
