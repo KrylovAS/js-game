@@ -1,7 +1,7 @@
 'use strict';
 
 class Vector {
-    constructor(x = 0, y = 0) {        
+    constructor(x = 0, y = 0) {
         this.x = x;
         this.y = y;
     }
@@ -12,7 +12,7 @@ class Vector {
           throw new Error('Можно прибавлять к вектору только вектор типа Vector');
         }
     }
-    times(n) {        
+    times(n) {
         return new Vector(this.x * n, this.y * n);
     }
 }
@@ -52,9 +52,11 @@ class Actor {
     isIntersect(actor) {
         if(!(actor instanceof Actor || actor === undefined)){
           throw new Error('Ожидается обьект типа Actor');
-        }else if(actor === this) {
+        }
+        if(actor === this) {
             return false;
-        }else if(actor.left >= this.right || actor.right <= this.left || actor.top >= this.bottom || actor.bottom <= this.top) {                  
+        }
+        if(actor.left >= this.right || actor.right <= this.left || actor.top >= this.bottom || actor.bottom <= this.top) {                  
             return false;
         } 
         return true;
@@ -85,17 +87,18 @@ class Level {
     actorAt(actor) {
         if(!(actor instanceof Actor) || actor === undefined) {
             throw new Error('Ожидается обьект типа Actor');
-        }return this.actors.find(element => element.isIntersect(actor));
+        }
+        return this.actors.find(element => element.isIntersect(actor));
+        
     }
 
     obstacleAt(position, size){
         if(!(position instanceof Vector) && !(size instanceof Vector)){
-            throw new Error('Ожидается обьекты типа Vector');        
-        } 
-
+            throw new Error('Ожидается обьекты типа Vector');
+        }
         
         if(position.x < 0 || position.y < 0 || position.x + size.x >= this.width) {
-            return 'wall'
+            return 'wall';
         }
 
         if(position.y + size.y >= this.height) {
@@ -111,7 +114,26 @@ class Level {
     }
 
     removeActor(actor){
-    
+        this.actors = this.actors.filter(element => element !== actor);
+    }
+
+    noMoreActors(type) {
+        return !this.actors.some(element => element.type === type);
+    }
+
+    playerTouched(type, actor){
+        if(this.status !== null){
+            return;
+        }
+        if(type === 'lava' || type === 'fireball'){
+            this.status = 'lost';
+        }
+        if(type === 'coin' && actor.type === 'coin' ) {
+            this.removeActor(actor);
+            if(this.noMoreActors('coin')) {
+                this.status = 'won';
+            }
+        }
     }
 }
 
