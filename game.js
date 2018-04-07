@@ -138,7 +138,7 @@ class Level {
 }
 
 
-
+console.log('hhhh')
 
 const grid = [
     [undefined, undefined],
