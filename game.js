@@ -51,7 +51,7 @@ class Actor {
 
     isIntersect(actor) {
         if(!(actor instanceof Actor || actor === undefined)){
-          throw new Error('Ожидается обьект типа Actor') ;
+          throw new Error('Ожидается обьект типа Actor');
         }else if(actor === this) {
             return false;
         }else if(actor.left >= this.right || actor.right <= this.left || actor.top >= this.bottom || actor.bottom <= this.top) {                  
@@ -73,10 +73,48 @@ class Level {
             } return y;
         }, 0);
         this.status = null;
-        this.finishDelay = 1;
+        this.finishDelay = 1;        
+    }
+
+    isFinished() {
+        if(this.status !== null && this.finishDelay < 0) {
+            return true;
+        }return false;
+    }
+
+    actorAt(actor) {
+        if(!(actor instanceof Actor) || actor === undefined) {
+            throw new Error('Ожидается обьект типа Actor');
+        }return this.actors.find(element => element.isIntersect(actor));
+    }
+
+    obstacleAt(position, size){
+        if(!(position instanceof Vector) && !(size instanceof Vector)){
+            throw new Error('Ожидается обьекты типа Vector');        
+        } 
+
         
+        if(position.x < 0 || position.y < 0 || position.x + size.x >= this.width) {
+            return 'wall'
+        }
+
+        if(position.y + size.y >= this.height) {
+            return 'lava';
+        }
+        for (let y = Math.floor(position.y); y < Math.ceil(position.y + size.y); y++) {
+            for (let x = Math.floor(position.x); x < Math.ceil(position.x + size.x); x++) {
+                if (typeof(this.grid[x][y] !== 'undefined')) {
+                  return this.grid[x][y];
+                }
+            }
+        }
+    }
+
+    removeActor(actor){
+    
     }
 }
+
 
 
 
