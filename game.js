@@ -193,9 +193,8 @@ class LevelParser {
 }
 
 class Fireball extends Actor {
-    constructor(pos = new Vector(0, 0), speed = new Vector(0, 0)) {
+    constructor(pos, speed) {
         super(pos, new Vector(1, 1), speed)
-        
     }
 
     get type() {
@@ -220,16 +219,18 @@ class Fireball extends Actor {
     }
 }
 
+class HorizontalFireball extends Actor {
+    constructor(pos){
+        return new Fireball(pos, new Vector(2, 0))
+    }
+}
 
-const time = 5;
-const speed = new Vector(1, 0);
-const position = new Vector(5, 5);
+class VerticalFireball extends Actor {
+    constructor(pos){
+        return new Fireball(pos, new Vector(0, 2))
+    }
+}
 
-const ball = new Fireball(position, speed);
 
-const nextPosition = ball.getNextPosition(time);
-console.log(`Новая позиция: ${nextPosition.x}: ${nextPosition.y}`);
 
-ball.handleObstacle();
-console.log(`Текущая скорость: ${ball.speed.x}: ${ball.speed.y}`);
 
