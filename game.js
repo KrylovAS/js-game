@@ -231,6 +231,12 @@ class VerticalFireball extends Actor {
     }
 }
 
+class FireRain extends Actor {
+    constructor(pos) {
+        return new Fireball(pos, new Vector(0, 3))
+    }
+}
+
 
 
 
