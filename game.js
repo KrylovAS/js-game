@@ -219,22 +219,33 @@ class Fireball extends Actor {
     }
 }
 
-class HorizontalFireball extends Actor {
+class HorizontalFireball extends Fireball {
     constructor(pos){
-        return new Fireball(pos, new Vector(2, 0))
+         super(pos, new Vector(2, 0))
     }
 }
 
-class VerticalFireball extends Actor {
+class VerticalFireball extends Fireball {
     constructor(pos){
-        return new Fireball(pos, new Vector(0, 2))
+         super(pos, new Vector(0, 2))
     }
 }
 
-class FireRain extends Actor {
+class FireRain extends Fireball {
     constructor(pos) {
-        return new Fireball(pos, new Vector(0, 3))
+         super(pos, new Vector(0, 3))
+         this.startPos = pos
     }
+    handleObstacle() {
+        this.pos = this.startPos
+    }
+}
+
+class Coin extends Actor {
+    constructor(pos) {
+        super()
+    }
+
 }
 
 
