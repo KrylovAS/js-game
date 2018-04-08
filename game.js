@@ -137,43 +137,61 @@ class Level {
     }
 }
 
+class Player extends Actor {
+    constructor(pos = new Vector()) {
+        super(new Vector(pos.x, pos.y - 0.5), new Vector(0.8, 1.5))
+        
+    }
+    get type () {
+        return 'player';
+    }
+}
+
+class LevelParser {
+    constructor(dictionaryObj = {}) {
+        this.dictionaryObj = dictionaryObj;
+    }
+
+    actorFromSymbol(symbol) {
+        if(symbol === undefined){
+            return undefined;
+        }return this.dictionaryObj[symbol]
+    }
+
+    obstacleFromSymbol(symbol) {
+        if(symbol === 'x') {
+            return 'wall';
+        }else if(symbol === '!'){
+            return 'lava';
+        }return undefined;
+    }
+
+    createGrid(plan){
+        return plan.map(row => row.split('').map(symbol => this.obstacleFromSymbol(symbol)));
+    }
+
+    createActors(plan) {
+        const actors = [];
+        for(let y = 0; y < plan.length; y++) {
+            console.log(y)
+            for(let x = 0; x < plan[y].length; x++) {
+                const Obj = this.actorFromSymbol(plan[y][x]);
+                if (typeof Obj === 'function') {
+                    const actor = new Obj(new Vector(x, y));
+                    if (actor instanceof Actor) {
+                    actors.push(actor);
+                    }
+                }
+            }
+        }
+        return actors;
+    }  
+    parse(plan){
+        return new Level(this.createGrid(plan), this.createActors(plan));
+    }
+    
+}
 
 
 
-const grid = [
-    [undefined, undefined],
-    ['wall', 'wall']
-  ];
-  
-  function MyCoin(title) {
-    this.type = 'coin';
-    this.title = title;
-  }
-  MyCoin.prototype = Object.create(Actor);
-  MyCoin.constructor = MyCoin;
-  
-  const goldCoin = new MyCoin('Золото');
-  const bronzeCoin = new MyCoin('Бронза');
-  const player = new Actor();
-  const fireball = new Actor();
-  
-  const level = new Level(grid, [ goldCoin, bronzeCoin, player, fireball ]);
-  
-  level.playerTouched('coin', goldCoin);
-  level.playerTouched('coin', bronzeCoin);
-  
-  if (level.noMoreActors('coin')) {
-    console.log('Все монеты собраны');
-    console.log(`Статус игры: ${level.status}`);
-  }
-  
-  const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
-  if (obstacle) {
-    console.log(`На пути препятствие: ${obstacle}`);
-  }
-  
-  const otherActor = level.actorAt(player);
-  if (otherActor === fireball) {
-    console.log('Пользователь столкнулся с шаровой молнией');
-  }
 
