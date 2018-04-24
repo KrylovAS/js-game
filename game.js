@@ -7,8 +7,7 @@ class Vector {
     }
     plus(typeVector) {
         if(typeVector instanceof Vector ) {
-            return  new Vector(this.x + typeVector.x , this.y + typeVector.y);
-        // else не нужен, т.к. в if return (ок согласен :))
+            return  new Vector(this.x + typeVector.x , this.y + typeVector.y);        
         }
         throw new Error('Можно прибавлять к вектору только вектор типа Vector');        
     }
@@ -49,40 +48,31 @@ class Actor {
     
     act() {}
 
-    isIntersect(actor) {
-        // вторая проверка лишняя, т.к. undefined instanceof Actor === false (ок, понятно)
+    isIntersect(actor) {        
         if(!(actor instanceof Actor)){
           throw new Error('Ожидается обьект типа Actor');
         }
         if(actor === this) {
             return false;
         }
-
-        // можно обратить условие и написать просто return ...
-        // чтобы обрать условие нужно || заменить на &&, <= на > и >= на < (очень подробно описываете как нужно исправлять (изначально вариант с && рассматривал 
-        // но не догодался что можно обойтись тогда без условия))
-        return (actor.left < this.right && actor.right > this.left && actor.top < this.bottom && actor.bottom > this.top)                 
+        
+        return (actor.left < this.right && actor.right > this.left && actor.top < this.bottom && actor.bottom > this.top);               
         
     }    
 }
 
 class Level {
-    constructor(grid = [], actors = []) {
-        // здесь лушч есоздать копии массивов, чтобы нельзя было изменить поля объекта извне (ok)
-        this.grid = grid;
-        this.actors = actors;
-        const gridCopy = grid.slice();
-        const actorsCopy = actors.slice()
-        this.height = gridCopy.length;
-        this.player = actorsCopy.find(element => element.type === 'player')
-        // рабочее решение, короче можно написть использую Math.max, map и оператор "..." (ok)
-        this.width = Math.max(0, ...gridCopy.map(element => element.length));
+    constructor(grid = [], actors = []) {        
+        this.grid = grid.slice();
+        this.actors = actors.slice();        
+        this.height = grid.slice().length;
+        this.player = actors.slice().find(element => element.type === 'player');        
+        this.width = Math.max(0, ...grid.slice().map(element => element.length));
         this.status = null;
         this.finishDelay = 1;
     }
 
-    isFinished() {
-        // тут лушче написать просто return <условие в if> (ок , понятно, так короче)
+    isFinished() {        
         return (this.status !== null && this.finishDelay < 0)
     }
 
@@ -107,16 +97,13 @@ class Level {
             return 'lava';
         }
 
-        // округлённые значения лучше сохранить в переменных,
-        // чтобы не округлять на каждой итерации цикла (понял, чтобы меньше ресурсов при вычислении  задействовать)
         const posT = Math.floor(position.y),
               posB = Math.ceil(position.y + size.y),
               posL = Math.floor(position.x),
               posR = Math.ceil(position.x + size.x);
 
         for (let y = posT; y < posB; y++) {
-            for (let x = posL ; x < posR ; x++) {
-                // this.grid[y][x] лучше сохранить в переменную, чтобы 2 раза не писать (ок, только по этой причине?)
+            for (let x = posL ; x < posR ; x++) {                
                 const positioning = this.grid[y][x];
                 if (positioning) {
                   return positioning;
@@ -160,14 +147,12 @@ class Player extends Actor {
 }
 
 class LevelParser {
-    constructor(actorDict = {}) {
-        // здесь лучше создать копию объекта, чтобы нельзя было изменить поле извне   (ok)
-        let objactorDictCopy = Object.assign({} , actorDict)
-        this.objactorDictCopy = objactorDictCopy;
+    constructor(actorDict = {}) {        
+        this.objactorDictCopy = Object.assign({} , actorDict);
     }
 
     actorFromSymbol(symbol) {
-        // проверку можно убрать, ничего не изменится (ок)
+        
         return this.objactorDictCopy[symbol]
     }
 
@@ -176,7 +161,7 @@ class LevelParser {
             return 'wall';
         }else if(symbol === '!'){
             return 'lava';
-        } // лишняя строчка, функция и так возвращает undefined, если не указая явный return (точно , как и пустой return)
+        } 
     }
 
     createGrid(plan){
@@ -213,20 +198,18 @@ class Fireball extends Actor {
         return 'fireball';
     }
 
-    getNextPosition(time = 1) {
-        //  здесь лучше использовать мтеоды plus и times (ok)
-       return this.pos.plus(this.speed.times(time))
+    getNextPosition(time = 1) {        
+       return this.pos.plus(this.speed.times(time));
     }
     
 
-    handleObstacle() {
-        // здесь можно обойтись методом times (ок )
-        this.speed = this.speed.times(-1)
+    handleObstacle() {        
+        this.speed = this.speed.times(-1);
     } 
 
     act(time, level) {
         let nextPosition = this.getNextPosition(time);
-        if (level.obstacleAt(nextPosition, this.size)){
+        if (level.obstacleAt(nextPosition, this.size)) {
           this.handleObstacle();
         }else {
           this.pos = nextPosition;
