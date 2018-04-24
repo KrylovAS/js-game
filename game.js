@@ -270,8 +270,7 @@ class Coin extends Actor {
     }
 }
 
-const actorDict = {
-     
+const actorDict = {     
     '@': Player,
     '=': HorizontalFireball,
     'v': FireRain,
